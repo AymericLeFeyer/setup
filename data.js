@@ -9,8 +9,8 @@ const setupData = [
   {
     id: 'keyboard',
     category: 2,
-    x: 46, // percentage from left
-    y: 56, // percentage from top
+    x: 46,
+    y: 56,
     name: 'Clavier Keychron K8Ji qwerty',
     image: 'https://keychron.fr/cdn/shop/products/Keychron-K8-tenkeyless-wireless-mechanical-keyboard-for-Mac-Windows-iOS-RGB-white-backlight-with-Gateron-switch-red_3bdf2ef0-71ea-40b8-bd6c-e759569196a8.jpg?v=1750842904&width=1214',
     buyLink: 'https://keychron.fr/products/keychron-k8-tenkeyless-wireless-mechanical-keyboard',
