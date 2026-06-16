@@ -2,7 +2,8 @@ const categoriesData = [
   { id: 1, name: 'PC de jeux', showTotal: true },
   { id: 2, name: 'Setup', showTotal: true },
   { id: 3, name: 'Mac', showTotal: true },
-  { id: 4, name: 'Autre', showTotal: false }
+  { id: 4, name: 'VR', showTotal: true },
+  { id: 5, name: 'Autre', showTotal: false }
 ];
 
 const setupData = [
@@ -212,7 +213,7 @@ const setupData = [
   },
   {
     id: 'notebook',
-    category: 4,
+    category: 5,
     coordinates: [
       { x: 20, y: 59 }
     ],
@@ -309,5 +310,46 @@ const setupData = [
     image: 'https://m.media-amazon.com/images/I/51kfJ88unLL._AC_SL1000_.jpg',
     buyLink: 'https://amzn.to/4ospHJg',
     price: '120€'
+  },
+  {
+    id: 'vr-headset',
+    category: 4,
+    name: 'Casque VR Meta Quest 3 128Gb',
+    image: 'https://m.media-amazon.com/images/I/61e424BTGoL._AC_SL1500_.jpg',
+    buyLink: 'https://amzn.to/4e8bTAk',
+    price: '550€'
+  },
+  {
+    id: 'vr-headset-sangle',
+    category: 4,
+    name: 'Sangle de Tête BOBOVR M2 Plus',
+    image: 'https://m.media-amazon.com/images/I/61Ktre2-V+L._AC_SL1500_.jpg',
+    buyLink: 'https://amzn.to/4e8bTAk',
+    price: '120€'
+  },
+  {
+    id: 'vr-kit',
+    category: 4,
+    name: 'kit de Mise à Niveau M2 vers M3 Pro',
+    description: 'Car j\'avais avant le Quest 2, j\'ai acheté cette upgrade en passant sur le Quest 3',
+    image: 'https://m.media-amazon.com/images/I/51ZJTXFga9L._AC_SL1500_.jpg',
+    buyLink: 'https://amzn.to/4aDbDaf',
+    price: '21€'
+  },
+  {
+    id: 'vr-charger',
+    category: 4,
+    name: 'Station de Charge Carina D1',
+    image: 'https://www.prismxr.com/cdn/shop/files/1.1.jpg?v=1715763855&width=1920',
+    buyLink: 'https://www.prismxr.com/products/prismxr-carina-d1-charging-dock-for-quest-3',
+    price: '70€'
+  },
+  {
+    id: 'vr-glasses',
+    category: 4,
+    name: 'Verre de prescription',
+    image: 'https://honsvr.com/wp-content/uploads/2023/09/Meta-Quest-3-Prescription-Lenses-2-600x600.jpg',
+    buyLink: 'https://honsvr.com/product/custom-meta-quest-3-prescription-lenses-by-honsvr/',
+    price: '40€'
   }
 ];
