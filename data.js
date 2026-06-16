@@ -309,12 +309,5 @@ const setupData = [
     image: 'https://m.media-amazon.com/images/I/51kfJ88unLL._AC_SL1000_.jpg',
     buyLink: 'https://amzn.to/4ospHJg',
     price: '120€'
-  },
-  {
-    id: 'test',
-    name: 'test',
-    image: 'test',
-    buyLink: 'test',
-    price: '159€'
   }
 ];
