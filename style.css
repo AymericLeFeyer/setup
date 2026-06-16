@@ -1,0 +1,448 @@
+:root {
+    --bg-color: #0f111a;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a5b5;
+    --accent-color: #6366f1;
+    --accent-glow: rgba(99, 102, 241, 0.5);
+    --marker-core: #ffffff;
+    --card-bg: rgba(20, 22, 35, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Background Effects */
+.ambient-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: 
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 25%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.content {
+    width: 100%;
+    max-width: 1400px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+.header {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.header h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff, #a0a5b5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header p {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+/* Setup Container */
+.setup-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 20px;
+    overflow: visible; /* Allow tooltips to overflow if needed */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--card-border);
+}
+
+.setup-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 20px;
+    user-select: none;
+}
+
+/* Marker Point */
+.marker {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background-color: transparent;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.marker::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--marker-core);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--marker-core);
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.marker::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--accent-glow);
+    border-radius: 50%;
+    animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+.marker:hover,
+.marker.active {
+    z-index: 50;
+}
+
+.marker:hover::before {
+    transform: scale(1.3);
+}
+
+.marker:hover::after {
+    animation-play-state: paused;
+    opacity: 0.8;
+    transform: scale(1.5);
+    transition: all 0.3s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    50% { transform: scale(1.5); opacity: 0; }
+    100% { transform: scale(0.8); opacity: 0; }
+}
+
+/* Glassmorphism Card (Tooltip) */
+/* Card Content Grouping */
+.device-card {
+    position: absolute;
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1rem;
+    color: var(--text-primary);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) translateX(-50%);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 20;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 280px;
+}
+
+.device-card.has-multiple-or-image {
+    width: 380px;
+}
+
+/* Tooltip positioning relative to marker */
+.marker .device-card {
+    bottom: 50%;
+    left: 50%;
+}
+
+.marker:hover .device-card,
+.marker.active .device-card {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) translateX(-50%);
+    pointer-events: auto; /* Make interactive when visible */
+}
+
+/* Edge Alignments */
+.marker.align-left .device-card {
+    left: 0;
+    transform: translateY(10px);
+}
+
+.marker.align-left:hover .device-card,
+.marker.align-left.active .device-card {
+    transform: translateY(0);
+}
+
+.marker.align-right .device-card {
+    left: auto;
+    right: 0;
+    transform: translateY(10px);
+}
+
+.marker.align-right:hover .device-card,
+.marker.align-right.active .device-card {
+    transform: translateY(0);
+}
+
+.card-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.card-item.has-image {
+    flex-direction: row;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.card-separator {
+    border: 0;
+    height: 1px;
+    background: var(--card-border);
+    margin: 0;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-price {
+    font-weight: 700;
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+.buy-btn {
+    background-color: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.2s;
+    display: inline-block;
+}
+
+.buy-btn:hover {
+    background-color: #4f46e5;
+    transform: translateY(-2px);
+}
+
+.footer {
+    margin-top: auto;
+    padding: 2rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    .device-card {
+        width: 220px;
+        padding: 1rem;
+    }
+}
+
+/* Coordinates Tracker */
+.coordinates-display {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--card-border);
+    z-index: 30;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* Optional Image Layout */
+.device-card.has-image {
+    display: flex;
+    gap: 1.2rem;
+    width: 380px; /* Wider card to accommodate the image */
+    align-items: center;
+}
+
+.card-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.card-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .device-card.has-image {
+        flex-direction: column;
+        width: 260px;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .card-image {
+        width: 100%;
+        height: 140px;
+    }
+}
+
+/* Black Marker Option */
+.marker.marker-black {
+    --marker-core: #111111;
+    --accent-glow: rgba(0, 0, 0, 0.5);
+}
+
+/* Equipment Section */
+.equipment-section {
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 3rem;
+}
+
+.category-group {
+    margin-bottom: 4rem;
+}
+
+.category-group h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+}
+
+.equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.grid-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.grid-card.has-image {
+    flex-direction: row;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.grid-card.has-image .card-image {
+    width: 80px;
+    height: 80px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.grid-card .card-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.grid-card .card-footer {
+    margin-top: auto;
+    padding-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .grid-card.has-image {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    .grid-card.has-image .card-image {
+        width: 100%;
+        height: 140px;
+    }
+}

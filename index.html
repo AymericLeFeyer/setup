@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Setup Interactif</title>
+    <meta name="description"
+        content="Découvrez mon setup de bureau interactif. Survolez les équipements pour en savoir plus.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="ambient-background"></div>
+
+    <div class="content">
+        <header class="header">
+            <h1>Mon Setup</h1>
+            <p>Passez votre souris sur les points lumineux pour découvrir les équipements.</p>
+        </header>
+
+        <main class="setup-container">
+            <div class="image-wrapper" id="image-wrapper">
+                <img src="assets/setup.jpg" alt="Photo de mon setup de bureau" class="setup-image" id="setup-image">
+                <div id="coordinates-display" class="coordinates-display">X: 0%, Y: 0%</div>
+                <!-- Les marqueurs seront injectés ici par app.js -->
+            </div>
+        </main>
+
+        <section class="equipment-section" id="equipment-container">
+            <!-- Les catégories seront injectées ici par app.js -->
+        </section>
+
+        <footer class="footer">
+            <p>Conçu avec soin pour une expérience optimale.</p>
+        </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
