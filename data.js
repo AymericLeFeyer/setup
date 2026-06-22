@@ -191,6 +191,17 @@ const setupData = [
     price: '78€'
   },
   {
+    id: 'streamdeck-mini',
+    category: 2,
+    coordinates: [
+      { x: 52.1, y: 52.1 },
+    ],
+    name: 'Elgato Stream Deck Mini',
+    image: 'https://m.media-amazon.com/images/I/61w+a4IDpsL._AC_SL1500_.jpg',
+    buyLink: 'https://amzn.to/4w7uiDy',
+    price: '60€'
+  },
+  {
     id: 'display-2',
     category: 2,
     coordinates: [
