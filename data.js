@@ -20,7 +20,7 @@ const setupData = [
   {
     id: 'mouse',
     category: 2,
-    x: 61,
+    x: 64,
     y: 57,
     name: 'Logitech G502 Lightspeed',
     buyLink: 'https://amzn.to/4fOydAk',
@@ -39,10 +39,10 @@ const setupData = [
     price: '700€'
   },
   {
-    id: 'headphones',
+    id: 'macbook',
     category: 3,
-    x: 88,
-    y: 60,
+    x: 91.4,
+    y: 58.9,
     name: 'Macbook Pro M5 14" 32Go',
     description: 'Pc principale',
     image: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-macbook-pro-summary-select-202601-14inch-spaceblack?wid=5120&hei=3280&fmt=webp&qlt=90&.v=aXlkdGF0T0RUUVdDckNLaUc0OEE0MlllLy9mUUZibXJtaURkcVBmZXl6TGZwYzY0U3JBMlVNMzZiaWVuTi9EK3FUbGFVTWR0Ti93a3VSRzN5cEpVUjNFeUJKK3phOU5VdEl3YWNDUExmb2l0Si9xVzRhSS8wWUpZZHdJZjBBRG1VTVFxaHdBZEpFclJzdzdiaUxXV2Jn&traceId=1',
@@ -63,7 +63,7 @@ const setupData = [
     id: 'camera',
     category: 2,
     x: 50,
-    y: 17,
+    y: 14,
     main: true,
     name: 'Panasonic DC-GX9',
     image: 'https://apprendre-la-photo.fr/wp-content/uploads/2024/07/f35537b9-774c-4571-9c5d-440622736719-750x405.jpeg',
@@ -74,7 +74,7 @@ const setupData = [
     id: 'cam-link',
     category: 2,
     x: 50,
-    y: 17,
+    y: 14,
     name: 'Elgato Cam Link 4K',
     description: 'Pour récupérer le flux de la caméra sur le PC',
     image: 'https://m.media-amazon.com/images/I/5146dDMeV6L._AC_SL1500_.jpg',
@@ -105,8 +105,8 @@ const setupData = [
   {
     id: 'streamdeck-neo',
     category: 2,
-    x: 27.5,
-    y: 54.4,
+    x: 25.9,
+    y: 41.3,
     name: 'Elgato Stream Deck Neo',
     image: 'https://m.media-amazon.com/images/I/61YXUwCxbhL._AC_SL1500_.jpg',
     buyLink: 'https://amzn.to/4oAWLiE',
@@ -115,7 +115,7 @@ const setupData = [
   {
     id: 'gamepad',
     category: 2,
-    x: 33.3,
+    x: 34.3,
     y: 51.4,
     name: 'Manette 8Bitdo Ultimate 2',
     description: 'Pratique car dispose d\'un stande de charge',
@@ -137,7 +137,7 @@ const setupData = [
     id: 'headset',
     category: 2,
     coordinates: [
-      { x: 72, y: 50.6 },
+      { x: 75, y: 50.3 },
       { x: 14, y: 66 }
     ],
     name: 'Casque Steelseries Arctis Pro Wireless',
@@ -149,8 +149,8 @@ const setupData = [
   {
     id: 'trackpad',
     category: 2,
-    x: 69,
-    y: 55.6,
+    x: 70.9,
+    y: 54.3,
     name: 'Apple Magic Trackpad',
     description: 'Support imprimer en 3D pour avoir un angle',
     image: 'https://m.media-amazon.com/images/I/51y-xuyGINL._AC_SL1500_.jpg',
@@ -160,8 +160,8 @@ const setupData = [
   {
     id: 'dock',
     category: 2,
-    x: 82.9,
-    y: 67.4,
+    x: 86.9,
+    y: 65.4,
     name: 'Dock Thunderbolt',
     image: 'https://m.media-amazon.com/images/I/61beBFZ3keL._AC_SL1500_.jpg',
     buyLink: 'https://amzn.to/4gnx8zu',
@@ -178,6 +178,17 @@ const setupData = [
     image: 'http://img.gkbcdn.com/p/2021-01-29/acgam-et225e-electric-three-stage-legs-standing-desk-frame-black-1611887099567._w500_.jpg',
     buyLink: 'https://www.geekbuying.com/item/ACGAM-ET225E-Electric-Three-stage-Legs-Standing-Desk-Frame-Black-434400.html',
     price: '367€'
+  },
+  {
+    id: 'light',
+    category: 2,
+    coordinates: [
+      { x: 77.3, y: 9 },
+    ],
+    name: 'Elgato Key Light Neo',
+    image: 'https://m.media-amazon.com/images/I/51y6dY0rGeL._AC_SL1500_.jpg',
+    buyLink: 'https://amzn.to/4b3wxzr',
+    price: '78€'
   },
   {
     id: 'display-2',
@@ -215,7 +226,7 @@ const setupData = [
     id: 'notebook',
     category: 5,
     coordinates: [
-      { x: 20, y: 59 }
+      { x: 17.5, y: 58 }
     ],
     name: 'Notebook Louise Carmen Honoré (M)',
     image: 'https://louisecarmen.com/cdn/shop/files/naturel_54a32253-18e8-4175-90a1-69e9e8b3ff97_4000x@2x.progressive.jpg?v=1768326147',
