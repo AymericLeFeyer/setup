@@ -28,6 +28,26 @@ const setupData = [
     price: '124€'
   },
   {
+    id: 'mouse-qi',
+    category: 2,
+    x: 64,
+    y: 57,
+    name: 'Adaptateur QI',
+    buyLink: 'https://fr.aliexpress.com/item/1005004522131878.html?spm=a2g0o.order_list.order_list_main.11.61db5e5b3hncNf&gatewayAdapt=glo2fra',
+    image: 'https://ae-pic-a1.aliexpress-media.com/kf/S69180181b6de4a9eb196b7bafde3ed9dZ.jpg_960x960q75.jpg_.avif',
+    price: '12€'
+  },
+  {
+    id: 'mouse-charger',
+    category: 2,
+    x: 64,
+    y: 57,
+    name: 'Adaptateur QI',
+    buyLink: 'https://fr.aliexpress.com/item/1005008249862578.html?spm=a2g0o.order_list.order_list_main.29.61db5e5b3hncNf&gatewayAdapt=glo2fra',
+    image: 'https://ae-pic-a1.aliexpress-media.com/kf/Sb8526d4b9f8a47c48a741b55afee49b48.jpg_960x960q75.jpg_.avif',
+    price: '5€'
+  },
+  {
     id: 'main-monitor',
     category: 2,
     x: 49,
@@ -156,6 +176,26 @@ const setupData = [
     image: 'https://m.media-amazon.com/images/I/51y-xuyGINL._AC_SL1500_.jpg',
     buyLink: 'https://amzn.to/4oqJFUM',
     price: '116€'
+  },
+  {
+    id: 'trackpad-qi',
+    category: 2,
+    x: 70.9,
+    y: 54.3,
+    name: 'Adaptateur QI',
+    image: 'https://ae-pic-a1.aliexpress-media.com/kf/A2cfd90eca6f6484a9f660b2adcba662fg.jpg_960x960q75.jpg_.avif',
+    buyLink: 'https://fr.aliexpress.com/item/1005007514477398.html?spm=a2g0o.order_list.order_list_main.5.61db5e5b3hncNf&gatewayAdapt=glo2fra',
+    price: '8€'
+  },
+  {
+    id: 'trackpad-charger',
+    category: 2,
+    x: 70.9,
+    y: 54.3,
+    name: 'QI charger',
+    image: 'https://ae-pic-a1.aliexpress-media.com/kf/Sb8526d4b9f8a47c48a741b55afee49b48.jpg_960x960q75.jpg_.avif',
+    buyLink: 'https://fr.aliexpress.com/item/1005008249862578.html?spm=a2g0o.order_list.order_list_main.29.61db5e5b3hncNf&gatewayAdapt=glo2fra',
+    price: '5€'
   },
   {
     id: 'dock',
