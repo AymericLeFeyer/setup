@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Setup Config</title>
+    <link rel="stylesheet" href="config.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="topbar-title">
+            <h1>Setup Config</h1>
+            <div class="setup-switch">
+                <select id="setup-select" title="Setup en cours d'édition"></select>
+                <button class="btn btn-small" id="btn-add-setup" title="Ajouter un setup">+ Setup</button>
+            </div>
+            <span class="badge" id="dirty-badge" hidden>Modifications non enregistrées</span>
+        </div>
+        <div class="topbar-actions">
+            <span class="mode-pill" id="mode-pill">Détection…</span>
+            <button class="btn btn-ghost" id="btn-reload" title="Recharger data.js et perdre les modifications">Recharger</button>
+            <button class="btn btn-ghost" id="btn-preview">Aperçu du site</button>
+            <button class="btn btn-ghost" id="btn-export">Voir le code</button>
+            <button class="btn btn-primary" id="btn-save">Enregistrer data.js</button>
+        </div>
+    </header>
+
+    <main class="layout">
+        <!-- Colonne gauche : image + marqueurs -->
+        <section class="panel panel-image">
+            <div class="panel-head">
+                <h2>Placement</h2>
+                <div class="panel-head-actions">
+                    <button class="btn btn-small" id="btn-place" data-active="false">Ajouter un point</button>
+                </div>
+            </div>
+            <div class="image-stage" id="image-stage">
+                <img id="stage-image" alt="Setup">
+                <p class="stage-placeholder" id="stage-placeholder">
+                    Aucune image pour ce setup.<br>Renseignez son URL dans l'onglet « Setup ».
+                </p>
+                <div class="stage-coords" id="stage-coords">X: 0%, Y: 0%</div>
+                <div class="stage-hint" id="stage-hint" hidden>Cliquez sur l'image pour placer le point</div>
+            </div>
+            <p class="hint">
+                Glissez un marqueur pour le déplacer. Cliquez sur un marqueur pour sélectionner l'équipement.
+                Les équipements sans coordonnées n'apparaissent que dans la liste du site.
+            </p>
+        </section>
+
+        <!-- Colonne droite : liste + édition -->
+        <section class="panel panel-side">
+            <nav class="tabs">
+                <button class="tab active" data-tab="items">Équipements</button>
+                <button class="tab" data-tab="setup">Setup</button>
+                <button class="tab" data-tab="categories">Catégories</button>
+            </nav>
+
+            <!-- Onglet équipements -->
+            <div class="tab-panel active" id="tab-items">
+                <div class="toolbar">
+                    <input type="search" id="search" placeholder="Rechercher un équipement…" autocomplete="off">
+                    <button class="btn btn-small btn-primary" id="btn-add-item">+ Équipement</button>
+                </div>
+                <div class="split">
+                    <ul class="item-list" id="item-list"></ul>
+                    <div class="editor" id="editor">
+                        <p class="empty-state">Sélectionnez un équipement dans la liste, ou créez-en un nouveau.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet setup courant -->
+            <div class="tab-panel" id="tab-setup">
+                <div class="editor" id="setup-editor"></div>
+            </div>
+
+            <!-- Onglet catégories -->
+            <div class="tab-panel" id="tab-categories">
+                <div class="toolbar">
+                    <span class="hint">Les catégories sont partagées par tous les setups. Leur ordre détermine l'ordre d'affichage.</span>
+                    <button class="btn btn-small btn-primary" id="btn-add-cat">+ Catégorie</button>
+                </div>
+                <div class="cat-list" id="cat-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modale d'export / code généré -->
+    <div class="modal" id="modal-export" hidden>
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3>data.js généré</h3>
+                <button class="btn btn-small btn-ghost" id="btn-close-export">Fermer</button>
+            </div>
+            <textarea id="export-code" spellcheck="false" readonly></textarea>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" id="btn-copy">Copier</button>
+                <button class="btn btn-ghost" id="btn-download">Télécharger</button>
+                <button class="btn btn-primary" id="btn-save-modal">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+
+    <!-- Les données sont chargées via le fichier source lui-même (fonctionne aussi en file://) -->
+    <script src="../data.js"></script>
+    <script src="serializer.js"></script>
+    <script src="config.js"></script>
+</body>
+
+</html>

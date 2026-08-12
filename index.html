@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup JamesAdams</title>
+    <title>Setup</title>
     <meta name="description"
         content="Découvrez mon setup de bureau interactif. Survolez les équipements pour en savoir plus.">
     <link rel="stylesheet" href="style.css">
@@ -16,36 +16,32 @@
 <body>
     <div class="ambient-background"></div>
 
+    <!-- Navigation entre les setups (masquée s'il n'y en a qu'un) -->
+    <nav class="setup-nav" id="setup-nav" hidden aria-label="Choix du setup"></nav>
+
     <div class="content">
         <header class="header">
-            <h1>Mon Setup</h1>
-            <p>Passez votre souris sur les points lumineux pour découvrir les équipements.</p>
+            <h1 id="setup-title">Mon Setup</h1>
         </header>
 
         <main class="setup-container">
             <div class="image-wrapper" id="image-wrapper">
-                <img src="https://raw.githubusercontent.com/JamesDAdams/setup/refs/heads/main/assets/setup.JPG"
-                    alt="Photo de mon setup de bureau" class="setup-image" id="setup-image">
+                <img src="" alt="Photo de mon setup de bureau" class="setup-image" id="setup-image">
+                <button type="button" class="zoom-btn" id="zoom-btn" title="Voir l'image en grand"
+                    aria-label="Voir l'image en grand, sans les points">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6" />
+                    </svg>
+                </button>
                 <div id="coordinates-display" class="coordinates-display">X: 0%, Y: 0%</div>
                 <!-- Les marqueurs seront injectés ici par app.js -->
             </div>
         </main>
 
-        <section class="setup-description-section">
+        <section class="setup-description-section" id="description-section">
             <h2>Description</h2>
             <div class="description-card">
-                <p>J'ai un setup particulier : <br>
-                    je suis sur Mac et j'ai un PC de jeu sous Windows. Quand je veux jouer, j'allume le PC
-                    et je switch l'écran principal sur ce PC. Les 2 écrans secondaires restent sur mon Mac.<br><br>
-                    Pour gérer le son, j'envoie le son du PC de jeu vers le Mac avec un câble optique sur une carte son
-                    externe et pour les jeux qui ont besoin d'un micro, j'envoie le son du micro de mon Mac vers le PC
-                    de jeu, idem
-                    avec un câble optique et une carte son externe.<br><br>
-                    Pour le clavier et la souris, j'ai un switch KVM avec un bouton sous le bureau.<br><br>
-                    Enfin, sur la photo, on ne voit pas le PC de jeu car il est dans un boîtier de serveur dans une
-                    autre pièce,
-                    relié avec des câbles HDMI et USB de 15m qui passent dans les murs.
-                </p>
+                <p id="setup-description"></p>
             </div>
         </section>
 
@@ -54,8 +50,18 @@
         </section>
 
         <footer class="footer">
-            <p>Conçu avec soin pour une expérience optimale.</p>
+            <p>Conçu avec soin par <a href="https://github.com/JamesDAdams/setup">JamesDAdams</a> pour une expérience optimale.</p>
         </footer>
+    </div>
+
+    <!-- Vue plein écran de la photo, sans les marqueurs -->
+    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo du setup en grand">
+        <button type="button" class="lightbox-close" id="lightbox-close" title="Fermer" aria-label="Fermer">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+        </button>
+        <img src="" alt="" class="lightbox-image" id="lightbox-image">
     </div>
 
     <script src="data.js"></script>

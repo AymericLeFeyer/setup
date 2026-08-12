@@ -1,0 +1,9 @@
+# Stack Portainer : déploie l'image publiée par GitHub Actions.
+# Dans Portainer : Stacks > Add stack > Repository (ou coller ce contenu).
+services:
+  setup:
+    image: ghcr.io/aymericlefeyer/setup:latest
+    container_name: setup
+    restart: unless-stopped
+    ports:
+      - "8085:80"

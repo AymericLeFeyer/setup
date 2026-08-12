@@ -1,8 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     const imageWrapper = document.getElementById('image-wrapper');
 
-    if (typeof setupData === 'undefined' || !imageWrapper) {
-        console.error('Erreur: Les données (setupData) ou le conteneur n\'ont pas été trouvés.');
+    // Récupération des setups. On accepte l'ancien format (setupData à plat)
+    // pour rester compatible avec un data.js non migré.
+    function getSetups() {
+        if (typeof setupsData !== 'undefined' && Array.isArray(setupsData) && setupsData.length) {
+            return setupsData;
+        }
+        if (typeof setupData !== 'undefined' && Array.isArray(setupData)) {
+            return [{ id: 'principal', title: 'Mon Setup', image: '', description: '', items: setupData }];
+        }
+        return [];
+    }
+
+    const setups = getSetups();
+
+    if (!setups.length || !imageWrapper) {
+        console.error('Erreur: Les données (setupsData) ou le conteneur n\'ont pas été trouvés.');
         return;
     }
 
@@ -41,14 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function createMarker(itemsAtCoord) {
         // Trouver l'élément principal (ou par défaut le premier)
         const mainItem = itemsAtCoord.find(i => i.main) || itemsAtCoord[0];
-        
+
         const marker = document.createElement('div');
         marker.classList.add('marker');
-        
+
         // Positionnement en pourcentage
         marker.style.left = `${mainItem.x}%`;
         marker.style.top = `${mainItem.y}%`;
-        
+
         // Couleur optionnelle basée sur l'élément principal
         if (mainItem.color === 'black') {
             marker.classList.add('marker-black');
@@ -70,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Création de la carte (infobulle)
         const card = document.createElement('div');
         card.classList.add('device-card');
-        
+
         // Si un des items a une image, on ajoute une classe pour élargir la carte
         if (itemsAtCoord.some(i => i.image)) {
             card.classList.add('has-multiple-or-image');
@@ -78,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Trier pour mettre le principal en premier
         const sortedItems = [mainItem, ...itemsAtCoord.filter(i => i !== mainItem)];
-        
+
         // Générer le contenu HTML pour chaque item dans cette coordonnée
         card.innerHTML = sortedItems.map((item, index) => createCardItemHtml(item, index)).join('');
 
@@ -86,144 +100,184 @@ document.addEventListener('DOMContentLoaded', () => {
         marker.addEventListener('click', (e) => {
             // Sur mobile, si on clique sur le lien, on laisse passer l'événement
             if (e.target.tagName.toLowerCase() === 'a') return;
-            
+
             document.querySelectorAll('.marker').forEach(m => {
                 if (m !== marker) m.classList.remove('active');
             });
-            
+
             marker.classList.toggle('active');
         });
 
         // Assemblage
         marker.appendChild(card);
         imageWrapper.appendChild(marker);
-        
+
         return marker;
     }
 
-    // Stockage des marqueurs par ID pour l'interaction avec la liste
-    const markersById = {};
     const equipmentContainer = document.getElementById('equipment-container');
+    const setupImage = document.getElementById('setup-image');
+    const setupTitle = document.getElementById('setup-title');
+    const descriptionSection = document.getElementById('description-section');
+    const descriptionEl = document.getElementById('setup-description');
+    const setupNav = document.getElementById('setup-nav');
 
-    // 1. Grouper les items par coordonnées et par catégories
-    const itemsByCoord = {};
-    const itemsByCategory = {};
+    // Stockage des marqueurs par ID pour l'interaction avec la liste (remis à zéro à chaque setup)
+    let markersById = {};
+
     const DEFAULT_CATEGORY = "Autres équipements";
-    
-    setupData.forEach(item => {
-        markersById[item.id] = [];
-        
-        // Group by coord
-        if (item.coordinates && Array.isArray(item.coordinates)) {
-            item.coordinates.forEach(coord => {
-                const key = `${coord.x}-${coord.y}`;
-                if (!itemsByCoord[key]) itemsByCoord[key] = [];
-                itemsByCoord[key].push({ ...item, x: coord.x, y: coord.y });
-            });
-        } 
-        else if (item.x !== undefined && item.y !== undefined) {
-            const key = `${item.x}-${item.y}`;
-            if (!itemsByCoord[key]) itemsByCoord[key] = [];
-            itemsByCoord[key].push(item);
+
+    // Rendu complet d'un setup : image, titre, description, marqueurs et listes
+    function renderSetup(setup) {
+        markersById = {};
+
+        // --- En-tête ---
+        // Avec plusieurs setups, le titre est déjà porté par l'onglet actif : on le masque.
+        if (setupTitle) {
+            setupTitle.textContent = setup.title || 'Mon Setup';
+            setupTitle.hidden = setups.length > 1;
         }
-        
-        // Group by category using categoriesData
-        let categoryName = DEFAULT_CATEGORY;
-        if (item.category) {
-            if (typeof categoriesData !== 'undefined' && Array.isArray(categoriesData)) {
-                // Utilisation de == au lieu de === pour supporter les ID en string ou integer (ex: 1 ou "1")
-                const catObj = categoriesData.find(c => c.id == item.category);
-                categoryName = catObj ? catObj.name : item.category; // fallback to ID if not found
+        document.title = setup.title ? `${setup.title} — Setup` : 'Setup';
+
+        if (setupImage) {
+            setupImage.src = setup.image || '';
+            setupImage.alt = `Photo de ${setup.title || 'mon setup'}`;
+        }
+
+        // --- Description (texte brut, les sauts de ligne deviennent des <br>) ---
+        if (descriptionSection && descriptionEl) {
+            if (setup.description) {
+                descriptionEl.innerHTML = escapeHtml(setup.description).replace(/\n/g, '<br>');
+                descriptionSection.hidden = false;
             } else {
-                categoryName = item.category; // fallback if categoriesData is not defined
+                descriptionEl.innerHTML = '';
+                descriptionSection.hidden = true;
             }
         }
 
-        if (!itemsByCategory[categoryName]) {
-            itemsByCategory[categoryName] = [];
-        }
-        itemsByCategory[categoryName].push(item);
-    });
+        // --- Nettoyage du rendu précédent ---
+        imageWrapper.querySelectorAll('.marker').forEach(m => m.remove());
+        if (equipmentContainer) equipmentContainer.innerHTML = '';
 
-    // 2. Créer les marqueurs pour chaque groupe de coordonnées
-    Object.values(itemsByCoord).forEach(itemsAtCoord => {
-        const marker = createMarker(itemsAtCoord);
-        
-        // Lier ce marqueur à tous les items présents à cette coordonnée
-        if (marker) {
-            itemsAtCoord.forEach(item => {
-                markersById[item.id].push(marker);
-            });
-        }
-    });
+        const items = Array.isArray(setup.items) ? setup.items : [];
 
-    // 3. Création des grilles par catégorie
-    if (equipmentContainer) {
-        equipmentContainer.innerHTML = ''; // Clear just in case
-        
-        Object.entries(itemsByCategory).forEach(([categoryName, items]) => {
-            const categoryWrapper = document.createElement('div');
-            categoryWrapper.classList.add('category-group');
-            
-            const categoryTitle = document.createElement('h2');
-            categoryTitle.textContent = categoryName;
-            
-            // --- Vérifier si l'option showTotal est activée ---
-            let showTotal = false;
-            if (typeof categoriesData !== 'undefined' && Array.isArray(categoriesData)) {
-                const catObj = categoriesData.find(c => c.name === categoryName);
-                if (catObj && catObj.showTotal) {
-                    showTotal = true;
+        // 1. Grouper les items par coordonnées et par catégories
+        const itemsByCoord = {};
+        const itemsByCategory = {};
+
+        items.forEach(item => {
+            markersById[item.id] = [];
+
+            // Group by coord
+            if (item.coordinates && Array.isArray(item.coordinates)) {
+                item.coordinates.forEach(coord => {
+                    const key = `${coord.x}-${coord.y}`;
+                    if (!itemsByCoord[key]) itemsByCoord[key] = [];
+                    itemsByCoord[key].push({ ...item, x: coord.x, y: coord.y });
+                });
+            }
+            else if (item.x !== undefined && item.y !== undefined) {
+                const key = `${item.x}-${item.y}`;
+                if (!itemsByCoord[key]) itemsByCoord[key] = [];
+                itemsByCoord[key].push(item);
+            }
+
+            // Group by category using categoriesData
+            let categoryName = DEFAULT_CATEGORY;
+            if (item.category) {
+                if (typeof categoriesData !== 'undefined' && Array.isArray(categoriesData)) {
+                    // Utilisation de == au lieu de === pour supporter les ID en string ou integer (ex: 1 ou "1")
+                    const catObj = categoriesData.find(c => c.id == item.category);
+                    categoryName = catObj ? catObj.name : item.category; // fallback to ID if not found
+                } else {
+                    categoryName = item.category; // fallback if categoriesData is not defined
                 }
             }
 
-            if (showTotal) {
-                let total = 0;
-                items.forEach(item => {
-                    if (item.price) {
-                        // Extraire le nombre (ex: "106€" -> 106, "1 100 €" -> 1100)
-                        // On supprime d'abord les espaces, puis on garde chiffres, virgule et point.
-                        const numStr = item.price.replace(/\s/g, '').replace(/[^\d.,]/g, '').replace(',', '.');
-                        const num = parseFloat(numStr);
-                        if (!isNaN(num)) {
-                            total += num;
-                        }
+            if (!itemsByCategory[categoryName]) {
+                itemsByCategory[categoryName] = [];
+            }
+            itemsByCategory[categoryName].push(item);
+        });
+
+        // 2. Créer les marqueurs pour chaque groupe de coordonnées
+        Object.values(itemsByCoord).forEach(itemsAtCoord => {
+            const marker = createMarker(itemsAtCoord);
+
+            // Lier ce marqueur à tous les items présents à cette coordonnée
+            if (marker) {
+                itemsAtCoord.forEach(item => {
+                    markersById[item.id].push(marker);
+                });
+            }
+        });
+
+        // 3. Création des grilles par catégorie
+        if (equipmentContainer) {
+            Object.entries(itemsByCategory).forEach(([categoryName, categoryItems]) => {
+                const categoryWrapper = document.createElement('div');
+                categoryWrapper.classList.add('category-group');
+
+                const categoryTitle = document.createElement('h2');
+                categoryTitle.textContent = categoryName;
+
+                // --- Vérifier si l'option showTotal est activée ---
+                let showTotal = false;
+                if (typeof categoriesData !== 'undefined' && Array.isArray(categoriesData)) {
+                    const catObj = categoriesData.find(c => c.name === categoryName);
+                    if (catObj && catObj.showTotal) {
+                        showTotal = true;
                     }
+                }
+
+                if (showTotal) {
+                    let total = 0;
+                    categoryItems.forEach(item => {
+                        if (item.price) {
+                            // Extraire le nombre (ex: "106€" -> 106, "1 100 €" -> 1100)
+                            // On supprime d'abord les espaces, puis on garde chiffres, virgule et point.
+                            const numStr = item.price.replace(/\s/g, '').replace(/[^\d.,]/g, '').replace(',', '.');
+                            const num = parseFloat(numStr);
+                            if (!isNaN(num)) {
+                                total += num;
+                            }
+                        }
+                    });
+
+                    if (total > 0) {
+                        const totalSpan = document.createElement('span');
+                        // Formatage: ex 1500 ou 1500.50
+                        const formattedTotal = Number.isInteger(total) ? total : total.toFixed(2);
+                        totalSpan.textContent = ` (Total : ${formattedTotal}€)`;
+                        totalSpan.style.fontStyle = 'italic';
+                        totalSpan.style.fontSize = '1.2rem';
+                        totalSpan.style.color = 'var(--text-secondary)';
+                        totalSpan.style.marginLeft = '15px';
+                        categoryTitle.appendChild(totalSpan);
+                    }
+                }
+
+                categoryWrapper.appendChild(categoryTitle);
+
+                const grid = document.createElement('div');
+                grid.classList.add('equipment-grid');
+
+                categoryItems.forEach(item => {
+                    const gridItem = createGridItem(item);
+                    grid.appendChild(gridItem);
                 });
 
-                if (total > 0) {
-                    const totalSpan = document.createElement('span');
-                    // Formatage: ex 1500 ou 1500.50
-                    const formattedTotal = Number.isInteger(total) ? total : total.toFixed(2);
-                    totalSpan.textContent = ` (Total : ${formattedTotal}€)`;
-                    totalSpan.style.fontStyle = 'italic';
-                    totalSpan.style.fontSize = '1.2rem';
-                    totalSpan.style.color = 'var(--text-secondary)';
-                    totalSpan.style.marginLeft = '15px';
-                    categoryTitle.appendChild(totalSpan);
-                }
-            }
-
-            categoryWrapper.appendChild(categoryTitle);
-            
-            const grid = document.createElement('div');
-            grid.classList.add('equipment-grid');
-            
-            items.forEach(item => {
-                const gridItem = createGridItem(item);
-                grid.appendChild(gridItem);
+                categoryWrapper.appendChild(grid);
+                equipmentContainer.appendChild(categoryWrapper);
             });
-            
-            categoryWrapper.appendChild(grid);
-            equipmentContainer.appendChild(categoryWrapper);
-        });
+        }
     }
 
     // Fonction pour générer une carte de la liste du bas
     function createGridItem(item) {
         const gridItem = document.createElement('div');
         gridItem.classList.add('grid-card');
-        
+
         let imageHtml = '';
         if (item.image) {
             imageHtml = `<img src="${item.image}" alt="${item.name}" class="card-image">`;
@@ -246,14 +300,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-        
+
         // Interactions: survoler un élément de la liste met en surbrillance le(s) point(s) sur l'image
         gridItem.addEventListener('mouseenter', () => {
             if (markersById[item.id]) {
                 markersById[item.id].forEach(m => m.classList.add('active'));
             }
         });
-        
+
         gridItem.addEventListener('mouseleave', () => {
             if (markersById[item.id]) {
                 markersById[item.id].forEach(m => m.classList.remove('active'));
@@ -261,6 +315,113 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         return gridItem;
+    }
+
+    function escapeHtml(text) {
+        return String(text == null ? '' : text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    // --- Navigation entre les setups ---
+
+    function setupSlug(setup, index) {
+        return setup.id || String(index + 1);
+    }
+
+    function selectSetup(index, updateHash) {
+        const setup = setups[index];
+        if (!setup) return;
+
+        renderSetup(setup);
+
+        if (setupNav) {
+            setupNav.querySelectorAll('.setup-tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+                tab.setAttribute('aria-current', i === index ? 'true' : 'false');
+            });
+        }
+
+        if (updateHash) {
+            history.replaceState(null, '', '#' + setupSlug(setup, index));
+        }
+    }
+
+    function buildNav() {
+        if (!setupNav) return;
+
+        // Un seul setup : pas de navigation à afficher
+        if (setups.length < 2) {
+            setupNav.hidden = true;
+            return;
+        }
+
+        setupNav.hidden = false;
+        setupNav.innerHTML = '';
+
+        setups.forEach((setup, index) => {
+            const tab = document.createElement('button');
+            tab.type = 'button';
+            tab.className = 'setup-tab';
+            tab.textContent = setup.title || `Setup ${index + 1}`;
+            tab.addEventListener('click', () => {
+                selectSetup(index, true);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            setupNav.appendChild(tab);
+        });
+    }
+
+    function initialIndex() {
+        const hash = decodeURIComponent(location.hash.replace('#', ''));
+        if (!hash) return 0;
+        const found = setups.findIndex((s, i) => setupSlug(s, i) === hash);
+        return found >= 0 ? found : 0;
+    }
+
+    buildNav();
+    selectSetup(initialIndex(), false);
+
+    window.addEventListener('hashchange', () => selectSetup(initialIndex(), false));
+
+    // --- Vue plein écran de la photo (sans les marqueurs) ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const zoomBtn = document.getElementById('zoom-btn');
+
+    if (lightbox && lightboxImage && zoomBtn) {
+        const closeBtn = document.getElementById('lightbox-close');
+
+        const openLightbox = () => {
+            const source = document.getElementById('setup-image');
+            if (!source || !source.getAttribute('src')) return;
+
+            lightboxImage.src = source.currentSrc || source.src;
+            lightboxImage.alt = source.alt;
+            lightbox.hidden = false;
+            document.body.classList.add('lightbox-open');
+            if (closeBtn) closeBtn.focus();
+        };
+
+        const closeLightbox = () => {
+            lightbox.hidden = true;
+            lightboxImage.src = '';
+            document.body.classList.remove('lightbox-open');
+            zoomBtn.focus();
+        };
+
+        zoomBtn.addEventListener('click', openLightbox);
+        if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+
+        // Clic en dehors de la photo : on ferme
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+        });
     }
 
     // --- Ajout du tracker de coordonnées ---
@@ -285,14 +446,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Calcul du pourcentage par rapport à la taille de l'image
             const x = ((e.clientX - rect.left) / rect.width) * 100;
             const y = ((e.clientY - rect.top) / rect.height) * 100;
-            
+
             coordsDisplay.textContent = `X: ${x.toFixed(1)}%, Y: ${y.toFixed(1)}%`;
         });
-        
+
         image.addEventListener('mouseenter', () => {
             if (isTrackerActive) coordsDisplay.style.opacity = '1';
         });
-        
+
         image.addEventListener('mouseleave', () => {
             coordsDisplay.style.opacity = '0';
         });

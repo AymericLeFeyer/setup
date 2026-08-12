@@ -1,0 +1,6 @@
+# Sauvegarde automatique créée par l'interface de configuration
+data.js.bak
+
+# OS
+.DS_Store
+Thumbs.db

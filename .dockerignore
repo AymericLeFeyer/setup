@@ -1,0 +1,15 @@
+# Tout est exclu par défaut : le Dockerfile ne copie que ce dont le site a besoin.
+*
+
+!index.html
+!app.js
+!data.js
+!style.css
+!assets/
+!docker/nginx.conf
+
+# Jamais dans l'image, même si un chemin ci-dessus s'élargissait un jour
+config/
+data.js.bak
+.git/
+.github/
