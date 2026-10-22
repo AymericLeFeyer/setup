@@ -83,3 +83,11 @@ La configuration se fait entièrement dans le fichier `data.js` :
 - **`categoriesData`** : Définissez vos catégories avec un ID, un nom, et si vous souhaitez afficher le prix total (`showTotal: true`). Elles sont partagées par tous les setups.
 - **`setupsData`** : La liste de vos setups. Chacun porte un `id` (ancre URL), un `title`, une `image`, une `description` (les `\n` deviennent des sauts de ligne) et son tableau `items`.
 - **`items`** : Vos équipements, avec leurs coordonnées (`x` et `y` ou un tableau `coordinates`), l'ID de la catégorie, le nom, le prix, une image, etc.
+
+## 📊 Analytics (Aynalytics)
+
+Le site charge le SDK [Aynalytics](https://github.com/AymericLeFeyer/aynalytics) (auto-hébergé) via `analytics.js` :
+
+- **Clé publique** : variable GitHub Actions `AYNALYTICS_SITE_KEY` (`ay_pk_...`, Settings > Secrets and variables > Actions > *Variables*). Le `Dockerfile` l'injecte au build dans `<meta name="aynalytics-site-key">` d'`index.html`. Vide (ou ouverture locale du fichier) : rien n'est envoyé.
+- **Proxy** : nginx relaie `/_ay/*` vers `aynalytics-collector:8080` (réseau Docker partagé `pangolin`, résolu à la requête : collector arrêté = 502 sur `/_ay/` uniquement, le site reste debout).
+- **Événements** : un `screen` au chargement (visites, visiteurs uniques, source, pays…), `setup_view { setup, title }` à chaque setup affiché (les ancres `#slug` ne changent pas de page), `merchant_click { product_id, product_name, category, price, merchant, setup, placement: marker|list, href }` sur les boutons « Acheter » (attributs `data-ay-*` lus par le SDK), `photo_zoom { setup }`.

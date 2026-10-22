@@ -15,6 +15,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const setups = getSetups();
 
+    // Setup affiché (slug), joint aux événements Aynalytics.
+    let currentSetupSlug = '';
+
+    function escapeAttr(text) {
+        return String(text == null ? '' : text)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;');
+    }
+
+    function categoryName(item) {
+        if (typeof categoriesData === 'undefined') return '';
+        const category = categoriesData.find(c => c.id === item.category);
+        return category ? category.name.trim() : '';
+    }
+
+    function merchantOf(url) {
+        try {
+            const host = new URL(url).hostname.replace(/^www\./, '');
+            return host === 'amzn.to' || host.startsWith('amazon.') ? 'amazon' : host;
+        } catch (e) {
+            return '';
+        }
+    }
+
+    // Bouton « Acheter » : le SDK Aynalytics lit data-ay-event / data-ay-prop-* au clic
+    // (merchant_click) et y ajoute l'URL. placement = carte du marqueur ou liste du bas.
+    function buyButtonHtml(item, placement) {
+        const props = {
+            product_id: item.id,
+            product_name: item.name,
+            category: categoryName(item),
+            price: item.price,
+            merchant: merchantOf(item.buyLink),
+            setup: currentSetupSlug,
+            placement: placement,
+        };
+        const attrs = Object.keys(props)
+            .filter(key => props[key])
+            .map(key => `data-ay-prop-${key}="${escapeAttr(props[key])}"`)
+            .join(' ');
+        return `<a href="${item.buyLink}" class="buy-btn" target="_blank" rel="noopener noreferrer" data-ay-event="merchant_click" ${attrs}>Acheter</a>`;
+    }
+
     if (!setups.length || !imageWrapper) {
         console.error('Erreur: Les données (setupsData) ou le conteneur n\'ont pas été trouvés.');
         return;
@@ -44,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${descHtml}
                     <div class="card-footer">
                         <span class="card-price">${item.price}</span>
-                        <a href="${item.buyLink}" class="buy-btn" target="_blank" rel="noopener noreferrer">Acheter</a>
+                        ${buyButtonHtml(item, 'marker')}
                     </div>
                 </div>
             </div>
@@ -296,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${descHtml}
                 <div class="card-footer">
                     <span class="card-price">${item.price}</span>
-                    <a href="${item.buyLink}" class="buy-btn" target="_blank" rel="noopener noreferrer">Acheter</a>
+                    ${buyButtonHtml(item, 'list')}
                 </div>
             </div>
         `;
@@ -333,6 +377,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectSetup(index, updateHash) {
         const setup = setups[index];
         if (!setup) return;
+
+        const slug = setupSlug(setup, index);
+        // Les ancres (#nomade) ne changent pas le chemin : le SDK ne compte qu'un screen,
+        // chaque setup consulté est donc suivi à part.
+        if (slug !== currentSetupSlug) {
+            window.ayTrack('setup_view', { setup: slug, title: setup.title || '' });
+        }
+        currentSetupSlug = slug;
 
         renderSetup(setup);
 
@@ -400,6 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lightboxImage.src = source.currentSrc || source.src;
             lightboxImage.alt = source.alt;
             lightbox.hidden = false;
+            window.ayTrack('photo_zoom', { setup: currentSetupSlug });
             document.body.classList.add('lightbox-open');
             if (closeBtn) closeBtn.focus();
         };

@@ -15,8 +15,17 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 # Copie explicite : rien d'autre que ces fichiers n'entre dans l'image.
-COPY index.html app.js data.js style.css ./
+COPY index.html app.js analytics.js data.js style.css ./
 COPY assets/ ./assets/
+
+# Aynalytics : clé PUBLIQUE du site (jamais la clé secrète), injectée dans la balise
+# <meta name="aynalytics-site-key"> d'index.html. Vide = analytics désactivé.
+ARG AYNALYTICS_SITE_KEY=""
+RUN case "$AYNALYTICS_SITE_KEY" in \
+      ""|ay_pk_*) ;; \
+      *) echo "AYNALYTICS_SITE_KEY doit commencer par ay_pk_" >&2; exit 1 ;; \
+    esac \
+ && sed -i "s|name=\"aynalytics-site-key\" content=\"\"|name=\"aynalytics-site-key\" content=\"$AYNALYTICS_SITE_KEY\"|" index.html
 
 EXPOSE 80
 

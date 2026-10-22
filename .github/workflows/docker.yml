@@ -36,6 +36,8 @@ jobs:
           context: .
           load: true
           tags: setup-check:ci
+          build-args: |
+            AYNALYTICS_SITE_KEY=${{ vars.AYNALYTICS_SITE_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -94,6 +96,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # Clé publique Aynalytics : variable GitHub (vars.*), pas un secret.
+          build-args: |
+            AYNALYTICS_SITE_KEY=${{ vars.AYNALYTICS_SITE_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
