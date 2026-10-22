@@ -379,14 +379,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!setup) return;
 
         const slug = setupSlug(setup, index);
-        // Les ancres (#nomade) ne changent pas le chemin : le SDK ne compte qu'un screen,
-        // chaque setup consulté est donc suivi à part.
-        if (slug !== currentSetupSlug) {
-            window.ayTrack('setup_view', { setup: slug, title: setup.title || '' });
-        }
+        const changed = slug !== currentSetupSlug;
         currentSetupSlug = slug;
 
         renderSetup(setup);
+
+        // Une page vue par setup affiché (nom « /#slug »), après renderSetup pour que le
+        // titre de l'onglet soit déjà celui du setup.
+        if (changed) window.ayScreen('/#' + slug, { setup: slug });
 
         if (setupNav) {
             setupNav.querySelectorAll('.setup-tab').forEach((tab, i) => {
