@@ -668,6 +668,30 @@ const setupsData = [
         image: 'https://cld.accentuate.io/42653034119264/1774629156722/AER21064_1_citypackpro224l_black_34hero.jpg?v=1774906164000&options=w_540',
         buyLink: 'https://aersf.com/collections/city-collection/products/city-pack-pro-2-24l?country=FR',
         price: '240€'
+      },
+      {
+        id: 'nouvel-equipement-20',
+        category: 10,
+        name: 'Anker Magsafe ',
+        image: 'https://m.media-amazon.com/images/I/61NvRDu8CxL._AC_SL1500_.jpg',
+        buyLink: 'https://link.amazon/B0fXCsZpo',
+        price: '59€'
+      },
+      {
+        id: 'nouvel-equipement-21',
+        category: 9,
+        name: 'Gritin masque',
+        image: 'https://m.media-amazon.com/images/I/81JYcf0mIdL._AC_SL1500_.jpg',
+        buyLink: 'https://link.amazon/B0i7CA4P3',
+        price: '8€'
+      },
+      {
+        id: 'nouvel-equipement-22',
+        category: 10,
+        name: 'AirTags',
+        image: 'https://m.media-amazon.com/images/I/61a9WSqyGEL._AC_SL1500_.jpg',
+        buyLink: 'https://link.amazon/B0aZuutkw',
+        price: '30'
       }
     ]
   }
